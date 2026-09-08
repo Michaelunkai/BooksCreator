@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { Book, Chapter, IllustrateRequest, Illustration } from "../types";
 import { fetchJson } from "../lib/api";
+import { isBundledAssetUrl } from "../lib/assetUrl";
 import { stripHtml as plainText } from "../lib/text";
 import { createLocalIllustration } from "../lib/localIllustration";
 import {
@@ -199,7 +200,7 @@ export function Illustrations({
           // The deterministic study is the final zero-setup path. It remains
           // useful when WebGPU, model downloads, or the local API are absent.
           const local = await createLocalIllustration(body);
-          const saved = local.dataUrl.startsWith("/assets/")
+          const saved = isBundledAssetUrl(local.dataUrl)
             ? {
                 id:
                   typeof globalThis.crypto?.randomUUID === "function"

@@ -1,4 +1,5 @@
 import type { IllustrateRequest } from "../types";
+import { assetUrl } from "./assetUrl";
 import { localIllustrationPrompt } from "./localWriter";
 
 type LocalArtInput = Pick<
@@ -106,7 +107,7 @@ export async function createLocalIllustration(input: LocalArtInput): Promise<{
     typeof navigator !== "undefined" &&
     /jsdom/i.test(navigator.userAgent || "")
   )
-    return { dataUrl: "/assets/tide-illustration.png", prompt };
+    return { dataUrl: assetUrl("assets/tide-illustration.png"), prompt };
   let context: CanvasRenderingContext2D | null = null;
   try {
     context = canvas.getContext("2d");
@@ -114,7 +115,7 @@ export async function createLocalIllustration(input: LocalArtInput): Promise<{
     context = null;
   }
   if (!context || typeof canvas.toDataURL !== "function")
-    return { dataUrl: "/assets/tide-illustration.png", prompt };
+    return { dataUrl: assetUrl("assets/tide-illustration.png"), prompt };
 
   const chapter = input.book.chapters.find(
     (item) => item.id === input.chapterId,
@@ -400,6 +401,6 @@ export async function createLocalIllustration(input: LocalArtInput): Promise<{
   try {
     return { dataUrl: canvas.toDataURL("image/png"), prompt };
   } catch {
-    return { dataUrl: "/assets/tide-illustration.png", prompt };
+    return { dataUrl: assetUrl("assets/tide-illustration.png"), prompt };
   }
 }

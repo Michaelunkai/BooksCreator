@@ -74,7 +74,9 @@ const bookSchema = z.object({
   updatedAt: timestamp,
 });
 const studioImagePattern =
-  /^(?:\/media\/[a-f0-9-]{36}\.(?:png|jpg|webp)|\/assets\/tide-illustration\.png)$/;
+  /^(?:\/media\/[a-f0-9-]{36}\.(?:png|jpg|webp)|\/(?:[a-zA-Z0-9_-]+\/)*assets\/tide-illustration\.png)$/;
+const browserImagePattern =
+  /^data:image\/(?:png|jpeg|webp);base64,[a-zA-Z0-9+/]+={0,2}$/;
 
 function chapterHtml(book: Book, chapter: Chapter, index: number): string {
   return `<section class="chapter" id="chapter-${index + 1}"><p class="chapter-number">Chapter ${index + 1}</p><h1>${escapeHtml(chapter.title)}</h1>${sanitizeHtml(chapter.content)}</section>`;
@@ -254,7 +256,7 @@ export async function importBook(file: File): Promise<Book> {
   for (const source of imageSources(original)) {
     if (!(
       studioImagePattern.test(source) ||
-      /^data:image\/(?:png|jpeg|webp);base64,[a-zA-Z0-9+/]+={0,2}$/.test(source)
+      browserImagePattern.test(source)
     ))
       throw new Error(
         "The backup contains an unsupported image address. Only embedded PNG, JPEG, WebP or local studio images are allowed.",
@@ -288,13 +290,13 @@ export async function importBook(file: File): Promise<Book> {
         { method: "POST", body: JSON.stringify({ dataUrl: source }) },
       );
       if (
-        !studioImagePattern.test(upload.url) ||
-        !upload.url.startsWith("/media/")
+        !studioImagePattern.test(upload.url) &&
+        !browserImagePattern.test(upload.url)
       )
         throw new Error(
           "The server did not return a valid saved illustration address.",
         );
-      uploadedUrls.push(upload.url);
+      if (upload.url.startsWith("/media/")) uploadedUrls.push(upload.url);
       mapping.set(source, upload.url);
     }
   } catch (error) {

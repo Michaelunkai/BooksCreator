@@ -19,6 +19,7 @@ import type {
   SummaryScope,
 } from "../types";
 import { fetchJson } from "../lib/api";
+import { assetUrl } from "../lib/assetUrl";
 import { textToHtml, wordCount as countWords } from "../lib/text";
 import { generateLocal } from "../lib/localWriter";
 import { generateBrowser } from "../lib/browserWriter";
@@ -987,7 +988,7 @@ export function Companion({
         </p>
         <img
           className="companion-landscape"
-          src="/assets/tide-illustration.png"
+          src={assetUrl("assets/tide-illustration.png")}
           alt=""
           aria-hidden="true"
         />

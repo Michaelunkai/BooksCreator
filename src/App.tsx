@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import type { Book, Chapter, Illustration } from "./types";
 import { useWorkspace } from "./lib/useWorkspace";
+import { assetUrl } from "./lib/assetUrl";
 import { createBook, createChapter } from "./lib/seed";
 import { escapeHtml, textToHtml, wordCount } from "./lib/text";
 import { ManuscriptEditor } from "./components/ManuscriptEditor";
@@ -476,7 +477,7 @@ export default function App() {
           >
             <span className="mini-cover">
               <span>{book.title || "Your story"}</span>
-              <img src="/assets/tide-illustration.png" alt="" />
+              <img src={assetUrl("assets/tide-illustration.png")} alt="" />
             </span>
             <span>
               <strong>{book.title || "Untitled book"}</strong>

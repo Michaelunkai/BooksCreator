@@ -1,4 +1,5 @@
 import type { Book, Chapter, Workspace } from "../types";
+import { assetUrl } from "./assetUrl";
 import { textToHtml } from "./text";
 
 export function createChapter(title = "Untitled chapter"): Chapter {
@@ -121,7 +122,7 @@ There was no one she could call who would know what to do with a mother returned
   book.images = [
     {
       id: crypto.randomUUID(),
-      url: "/assets/tide-illustration.png",
+      url: assetUrl("assets/tide-illustration.png"),
       prompt:
         "An atmospheric coastal house above tidal stone steps, seen across a quiet bay.",
       style: "Etching",

@@ -12,7 +12,8 @@ export function escapeHtml(text: string): string {
 
 export function safeImageSource(value: string): boolean {
   return (
-    (/^\/(?:media|assets)\/[a-zA-Z0-9_./%-]+$/.test(value) &&
+    ((/^\/media\/[a-zA-Z0-9_./%-]+$/.test(value) ||
+      /^\/(?:[a-zA-Z0-9_-]+\/)*assets\/[a-zA-Z0-9_./%-]+$/.test(value)) &&
       !value.includes("..")) ||
     /^data:image\/(?:png|jpeg|webp);base64,[a-zA-Z0-9+/=]+$/.test(value)
   );

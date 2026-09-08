@@ -1,4 +1,5 @@
 import type { Book, Chapter, GenerateRequest, GenerateResult } from "../types";
+import { assetUrl } from "./assetUrl";
 import { stripHtml, wordCount } from "./text";
 
 /**
@@ -323,7 +324,7 @@ async function loadEngine(
         (record) => record.model_id === modelId,
       );
       const localRoot = new URL(
-        `/models/${modelId}/`,
+        assetUrl(`models/${modelId}/`),
         window.location.href,
       ).toString();
       const localConfig = `${localRoot}mlc-chat-config.json`;
@@ -363,7 +364,7 @@ async function loadEngine(
                       ...record,
                       model: localRoot,
                       model_lib: new URL(
-                        `/models/${modelId}.wasm`,
+                        assetUrl(`models/${modelId}.wasm`),
                         window.location.href,
                       ).toString(),
                       ...(bundledModelIntegrity[modelId]

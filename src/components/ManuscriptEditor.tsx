@@ -25,7 +25,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import type { Book, Chapter } from "../types";
-import { sanitizeHtml, stripHtml, wordCount } from "../lib/text";
+import { safeImageSource, sanitizeHtml, stripHtml, wordCount } from "../lib/text";
 import { fetchJson } from "../lib/api";
 
 interface Props {
@@ -86,11 +86,7 @@ export function ManuscriptEditor({
         template.innerHTML = sanitizeHtml(html);
         let removed = false;
         for (const image of template.content.querySelectorAll("img")) {
-          if (
-            !/^(?:\/media\/[a-f0-9-]{36}\.(?:png|jpg|webp)|\/assets\/tide-illustration\.png)$/.test(
-              image.getAttribute("src") || "",
-            )
-          ) {
+          if (!safeImageSource(image.getAttribute("src") || "")) {
             image.remove();
             removed = true;
           }
