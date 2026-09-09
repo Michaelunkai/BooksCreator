@@ -10,9 +10,9 @@ For development: `npm install`, then `npm run dev` and open http://127.0.0.1:517
 
 ## Hosted deployment
 
-[Open Folio on Vercel](https://folio-writing-studio-6r72ofj9m-michaels-projects-ef5cc570.vercel.app/)
+[Open Folio on GitHub Pages](https://michaelunkai.github.io/BooksCreator/)
 
-The hosted deployment uses Vercel Authentication from the owning team, so sign in to Vercel when prompted. Its serverless filesystem is ephemeral; export a complete book backup for durable copies. The large local model cache is intentionally kept out of the hosted upload; the browser and deterministic writing fallbacks remain available.
+The public deployment opens directly in the browser with no account or server setup. The static build keeps the library, connection preferences, and generated browser artwork in this browser; export a complete book backup for durable copies. The large local model cache is intentionally kept out of the hosted upload, and the browser and deterministic writing fallbacks remain available.
 
 ## Write your book
 
