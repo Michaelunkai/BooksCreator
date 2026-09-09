@@ -23,9 +23,17 @@ import {
   Maximize2,
   Minimize2,
   MoreHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  Settings2,
 } from "lucide-react";
 import type { Book, Chapter } from "../types";
-import { safeImageSource, sanitizeHtml, stripHtml, wordCount } from "../lib/text";
+import {
+  safeImageSource,
+  sanitizeHtml,
+  stripHtml,
+  wordCount,
+} from "../lib/text";
 import { fetchJson } from "../lib/api";
 
 interface Props {
@@ -34,6 +42,9 @@ interface Props {
   chapterIndex: number;
   focus: boolean;
   onFocus: () => void;
+  onNavigate?: (delta: number) => void;
+  canNavigatePrevious?: boolean;
+  canNavigateNext?: boolean;
   onChange: (patch: Partial<Chapter>) => void;
   onSelection: (value: string) => void;
   onEditor: (editor: Editor | null) => void;
@@ -47,6 +58,9 @@ export function ManuscriptEditor({
   chapterIndex,
   focus,
   onFocus,
+  onNavigate = () => undefined,
+  canNavigatePrevious = chapterIndex > 0,
+  canNavigateNext = false,
   onChange,
   onSelection,
   onEditor,
@@ -287,13 +301,55 @@ export function ManuscriptEditor({
   return (
     <section className="manuscript-workspace" aria-label="Manuscript workspace">
       <div className="workspace-topline">
-        <div className="breadcrumb">
-          <span>Manuscript</span>
-          <span>/</span>
-          <span>Chapter {chapterIndex + 1}</span>
+        <div className="workspace-context">
+          <div className="breadcrumb">
+            <span>Manuscript</span>
+            <span aria-hidden="true">/</span>
+            <span>Chapter {chapterIndex + 1}</span>
+          </div>
+          <strong className="workspace-chapter-name">
+            {chapter.title || "Untitled chapter"}
+          </strong>
         </div>
-        <div className="inline-actions">
-          <button className="text-button" onClick={onFocus}>
+        <div className="chapter-actions">
+          <div
+            className="chapter-stepper"
+            role="group"
+            aria-label="Chapter navigation"
+          >
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Previous chapter"
+              title="Previous chapter"
+              disabled={!canNavigatePrevious}
+              onClick={() => onNavigate(-1)}
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <span aria-live="polite">{chapterIndex + 1}</span>
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Next chapter"
+              title="Next chapter"
+              disabled={!canNavigateNext}
+              onClick={() => onNavigate(1)}
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+          <button
+            type="button"
+            className="chapter-tools-button"
+            aria-label="Chapter tools"
+            title="Rename, plan, reorder, or manage this chapter"
+            onClick={onChapterDetails}
+          >
+            <Settings2 size={15} />
+            <span>Chapter tools</span>
+          </button>
+          <button type="button" className="text-button" onClick={onFocus}>
             {focus ? "Leave focus" : "Focus mode"}
             {focus ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
           </button>

@@ -74,6 +74,20 @@ const modes: { value: GenerationMode; label: string; refine?: boolean }[] = [
   { value: "shorten", label: "Make it more concise", refine: true },
   { value: "summary", label: "Build a summary" },
 ];
+const ideaStarters = [
+  {
+    label: "A turning point",
+    prompt: "A character must make a choice they have been avoiding.",
+  },
+  {
+    label: "A vivid detail",
+    prompt: "Begin with one small object that carries an unexpected memory.",
+  },
+  {
+    label: "A difficult question",
+    prompt: "What is this character afraid will happen if the truth comes out?",
+  },
+];
 const factor = { words: 1, lines: 12, pages: 250 };
 const providerWordsPerPart = 5000;
 // Keep browser requests inside a conservative 4,096-token budget. Smaller
@@ -354,8 +368,7 @@ export function Companion({
             const receivedWords = countWords(received.join("\n\n"));
             const remainingWords = Math.max(1, targetWords - receivedWords);
             wordsPerPart = browserWordsPerPart;
-            totalParts =
-              part + Math.ceil(remainingWords / browserWordsPerPart);
+            totalParts = part + Math.ceil(remainingWords / browserWordsPerPart);
             staged = totalParts > 1;
             body = {
               ...body,
@@ -583,6 +596,28 @@ export function Companion({
             maxLength={12000}
           />
         </label>
+        {!refining && !summarizing && !draft.idea.trim() && (
+          <div className="idea-starters" aria-label="Idea starters">
+            <div className="idea-starters-heading">
+              <strong>Need a place to begin?</strong>
+              <span>Choose a spark, then make it yours.</span>
+            </div>
+            <div className="idea-starter-list">
+              {ideaStarters.map((starter) => (
+                <button
+                  key={starter.label}
+                  type="button"
+                  className="idea-starter"
+                  aria-label={`Use idea starter: ${starter.label}`}
+                  onClick={() => patch({ idea: starter.prompt })}
+                >
+                  <span>{starter.label}</span>
+                  <ChevronDown size={14} />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         {summarizing && draft.summaryScope === "idea" && !draft.idea.trim() && (
           <p className="error-message">
             Add an idea to build an idea-only summary.

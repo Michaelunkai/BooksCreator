@@ -1903,3 +1903,433 @@ textarea::placeholder,
 .mobile-companion {
   box-shadow: 0 4px 22px #0008 !important;
 }
+
+/* The editor should make the next useful action obvious without hiding the
+   quiet literary workspace. */
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid #355048;
+  border-radius: 999px;
+  background: #101817;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.15s;
+}
+.github-link svg {
+  color: var(--accent-strong);
+}
+.github-link:hover {
+  background: #1d382f;
+  border-color: var(--accent);
+  color: #d9ffe8;
+  transform: translateY(-1px);
+}
+.github-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.workspace-context {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.workspace-chapter-name {
+  min-width: 0;
+  max-width: min(34vw, 360px);
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chapter-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.chapter-stepper {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px 3px;
+  border: 1px solid #30463f;
+  border-radius: 6px;
+  background: #101817;
+}
+.chapter-stepper .icon-button {
+  width: 27px;
+  height: 27px;
+  color: var(--muted);
+}
+.chapter-stepper .icon-button:hover:not(:disabled) {
+  background: #1d2d29;
+  color: var(--accent-strong);
+}
+.chapter-stepper > span {
+  min-width: 21px;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 10px;
+  text-align: center;
+}
+.chapter-tools-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 31px;
+  padding: 6px 9px;
+  border: 1px solid #355048;
+  border-radius: 5px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.chapter-tools-button svg {
+  color: var(--accent-strong);
+}
+.chapter-tools-button:hover {
+  background: #1d2d29;
+  border-color: var(--accent);
+  color: #d9ffe8;
+}
+
+.chapter-heading-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.chapter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 21px;
+  height: 19px;
+  padding: 0 5px;
+  border: 1px solid #355048;
+  border-radius: 999px;
+  color: var(--accent-strong);
+  font-family: var(--sans);
+  font-size: 9px;
+  line-height: 1;
+}
+.chapter-add-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 5px 8px;
+  border: 1px solid #355048;
+  border-radius: 5px;
+  color: var(--accent-strong);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.chapter-add-button:hover {
+  background: #1d2d29;
+  border-color: var(--accent);
+}
+.chapter-list button {
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 9px 8px;
+}
+.chapter-list button > span:first-child {
+  align-self: flex-start;
+  padding-top: 3px;
+}
+.chapter-list button > span:nth-child(2).chapter-row-copy {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  overflow: hidden;
+  white-space: normal;
+}
+.chapter-row-copy strong {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chapter-row-copy small {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  overflow: hidden;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 9px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chapter-status-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #77867e;
+}
+.chapter-status-dot.status-revised {
+  background: var(--gold);
+}
+.chapter-status-dot.status-final {
+  background: var(--accent-strong);
+  box-shadow: 0 0 0 2px #86c9aa22;
+}
+.chapter-row-arrow {
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: var(--accent-strong);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.chapter-list button:hover .chapter-row-arrow,
+.chapter-list button:focus-visible .chapter-row-arrow,
+.chapter-list button.active .chapter-row-arrow {
+  opacity: 0.9;
+}
+.chapter-list-hint {
+  padding: 12px 9px 0;
+  color: #77867e;
+  font-family: var(--sans);
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.chapter-details-summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px;
+  border: 1px solid #315047;
+  border-radius: 6px;
+  background: #14211e;
+}
+.chapter-details-summary > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+.chapter-details-kicker {
+  color: var(--gold);
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+.chapter-details-summary strong {
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chapter-details-summary > span:last-child {
+  flex-shrink: 0;
+  padding-top: 3px;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 10px;
+  text-align: right;
+}
+.chapter-details-intro {
+  color: var(--muted);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.field-help,
+.chapter-position-label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.chapter-position-label {
+  margin-top: -2px;
+}
+
+.idea-starters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid #2c4940;
+  border-radius: 6px;
+  background: #12201d;
+}
+.idea-starters-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.idea-starters-heading strong {
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+}
+.idea-starters-heading span {
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 400;
+}
+.idea-starter-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.idea-starter {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 7px 8px;
+  border: 1px solid #355048;
+  border-radius: 4px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 9px;
+  text-align: left;
+}
+.idea-starter span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.idea-starter svg {
+  flex: 0 0 auto;
+  color: var(--accent-strong);
+  transform: rotate(-90deg);
+}
+.idea-starter:hover {
+  background: #1d382f;
+  border-color: var(--accent);
+  color: #d9ffe8;
+}
+
+@media (max-width: 1150px) {
+  .github-link {
+    padding-inline: 8px;
+  }
+  .workspace-context {
+    gap: 9px;
+  }
+  .workspace-chapter-name {
+    max-width: 22vw;
+    font-size: 14px;
+  }
+  .chapter-tools-button {
+    padding-inline: 7px;
+  }
+  .chapter-details-summary > span:last-child {
+    max-width: 130px;
+    white-space: normal;
+  }
+}
+@media (max-width: 720px) {
+  .github-link {
+    min-height: 29px;
+    padding: 5px 7px;
+    font-size: 9px;
+  }
+  .github-link svg {
+    width: 14px;
+  }
+  .workspace-topline {
+    padding-inline: 12px;
+    gap: 8px;
+  }
+  .workspace-context {
+    gap: 6px;
+  }
+  .breadcrumb {
+    gap: 7px;
+  }
+  .workspace-chapter-name {
+    display: none;
+  }
+  .chapter-actions {
+    gap: 3px;
+  }
+  .chapter-tools-button {
+    width: 31px;
+    justify-content: center;
+    padding: 6px;
+  }
+  .chapter-actions .text-button {
+    gap: 4px;
+    padding-inline: 4px;
+    font-size: 10px;
+  }
+  .chapter-actions .text-button svg {
+    width: 13px;
+  }
+  .chapter-heading-copy {
+    gap: 6px;
+  }
+  .chapter-add-button span {
+    display: none;
+  }
+  .chapter-add-button {
+    width: 31px;
+    justify-content: center;
+    padding-inline: 5px;
+  }
+  .chapter-details-summary {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .chapter-details-summary > span:last-child {
+    max-width: none;
+    padding-top: 0;
+    text-align: left;
+  }
+  .idea-starters-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .idea-starter-list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -79,6 +79,24 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe("writing companion", () => {
+  it("offers a few gentle idea starters without hiding the free-form brief", () => {
+    render(
+      <Companion
+        book={book}
+        chapter={chapter}
+        selection=""
+        onSettings={vi.fn()}
+        onInsert={vi.fn()}
+      />,
+    );
+    const idea = screen.getByLabelText("Your idea") as HTMLTextAreaElement;
+    expect(screen.getByText("Need a place to begin?")).toBeTruthy();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Use idea starter: A turning point" }),
+    );
+    expect(idea.value).toContain("must make a choice");
+  });
+
   it("uses the free offline writer immediately when no key exists", async () => {
     const onSettings = vi.fn();
     const onInsert = vi.fn();
@@ -93,7 +111,9 @@ describe("writing companion", () => {
       />,
     );
     expect(
-      screen.getByText(/Free writing, summaries and art are ready without setup/i),
+      screen.getByText(
+        /Free writing, summaries and art are ready without setup/i,
+      ),
     ).toBeTruthy();
     const action = screen.getByRole("button", { name: "Develop this idea" });
     expect((action as HTMLButtonElement).disabled).toBe(true);
@@ -500,8 +520,11 @@ describe("writing companion", () => {
       screen.getByText(/Add an idea to build an idea-only summary/i),
     ).toBeTruthy();
     expect(
-      (screen.getByRole("button", { name: "Build a summary" }) as HTMLButtonElement)
-        .disabled,
+      (
+        screen.getByRole("button", {
+          name: "Build a summary",
+        }) as HTMLButtonElement
+      ).disabled,
     ).toBe(true);
   });
 

@@ -17,6 +17,7 @@ import {
   AlertCircle,
   X,
   PanelRightClose,
+  Github,
 } from "lucide-react";
 import type { Book, Chapter, Illustration } from "./types";
 import { useWorkspace } from "./lib/useWorkspace";
@@ -39,6 +40,13 @@ import {
 type View = "manuscript" | "bible" | "illustrations";
 type Dialog =
   "library" | "settings" | "book" | "history" | "chapter" | "export" | null;
+
+const chapterStatusLabel: Record<Chapter["status"], string> = {
+  draft: "First draft",
+  revised: "Revised",
+  final: "Final draft",
+};
+
 export default function App() {
   const {
     workspace,
@@ -111,6 +119,19 @@ export default function App() {
   bookRef.current = book;
   const chapterRef = useRef(chapter);
   chapterRef.current = chapter;
+  const navigateChapter = useCallback((delta: number) => {
+    const currentBook = bookRef.current;
+    const currentChapter = chapterRef.current;
+    if (!currentBook || !currentChapter) return;
+    const currentIndex = currentBook.chapters.findIndex(
+      (item) => item.id === currentChapter.id,
+    );
+    const nextChapter = currentBook.chapters[currentIndex + delta];
+    if (!nextChapter) return;
+    setChapterId(nextChapter.id);
+    setView("manuscript");
+    setNavOpen(false);
+  }, []);
   const onEditor = useCallback((editor: Editor | null) => {
     editorRef.current = editor;
   }, []);
@@ -395,6 +416,17 @@ export default function App() {
             <span>Folio</span>
           </button>
           <span className="brand-tagline">Your story, thoughtfully told.</span>
+          <a
+            className="github-link"
+            href="https://github.com/Michaelunkai/BooksCreator"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Open Michaelunkai on GitHub"
+            title="Open the Folio repository on GitHub"
+          >
+            <Github size={16} strokeWidth={1.8} />
+            <span>Michaelunkai</span>
+          </a>
         </div>
         <div className="header-actions">
           <button
@@ -507,13 +539,23 @@ export default function App() {
             ))}
           </nav>
           <div className="chapter-list-header">
-            <h2>Chapters</h2>
+            <div className="chapter-heading-copy">
+              <h2>Chapters</h2>
+              <span
+                className="chapter-count"
+                aria-label={`${book.chapters.length} chapters`}
+              >
+                {book.chapters.length}
+              </span>
+            </div>
             <button
-              className="icon-button"
+              className="chapter-add-button"
               aria-label="Add chapter"
+              title="Add a new chapter"
               onClick={addChapter}
             >
               <Plus size={19} />
+              <span>Add chapter</span>
             </button>
           </div>
           <nav className="chapter-list" aria-label="Chapters">
@@ -522,6 +564,8 @@ export default function App() {
                 key={c.id}
                 className={chapter.id === c.id ? "active" : ""}
                 aria-current={chapter.id === c.id ? "step" : undefined}
+                aria-label={`${String(i + 1).padStart(2, "0")} ${c.title || "Untitled chapter"}`}
+                title={`Open ${c.title || "Untitled chapter"}. ${chapterStatusLabel[c.status]} · ${wordCount(c.content).toLocaleString()} words.`}
                 onClick={() => {
                   setChapterId(c.id);
                   setView("manuscript");
@@ -529,11 +573,29 @@ export default function App() {
                 }}
               >
                 <span>{String(i + 1).padStart(2, "0")}</span>
-                <span>{c.title || "Untitled chapter"}</span>
-                {c.status === "final" && <CheckCircle2 size={12} />}
+                <span className="chapter-row-copy">
+                  <strong>{c.title || "Untitled chapter"}</strong>
+                  <small>
+                    <span
+                      className={`chapter-status-dot status-${c.status}`}
+                      aria-hidden="true"
+                    />
+                    {chapterStatusLabel[c.status]} ·{" "}
+                    {wordCount(c.content).toLocaleString()} words
+                  </small>
+                </span>
+                <ChevronRight
+                  className="chapter-row-arrow"
+                  size={14}
+                  aria-hidden="true"
+                />
               </button>
             ))}
           </nav>
+          <p className="chapter-list-hint">
+            Select a chapter to write. Chapter tools let you rename, plan,
+            reorder, or finish it.
+          </p>
           <div className="sidebar-bottom">
             <button
               className="writing-goal"
@@ -578,6 +640,9 @@ export default function App() {
               chapterIndex={chapterIndex}
               focus={focus}
               onFocus={() => setFocus((v) => !v)}
+              onNavigate={navigateChapter}
+              canNavigatePrevious={chapterIndex > 0}
+              canNavigateNext={chapterIndex < book.chapters.length - 1}
               onChange={updateChapter}
               onSelection={onSelection}
               onEditor={onEditor}
@@ -739,10 +804,9 @@ export default function App() {
           onMove={(delta) => {
             const next = [...book.chapters];
             const index = next.findIndex((c) => c.id === chapter.id);
-            [next[index], next[index + delta]] = [
-              next[index + delta],
-              next[index],
-            ];
+            const target = index + delta;
+            if (index < 0 || target < 0 || target >= next.length) return;
+            [next[index], next[target]] = [next[target], next[index]];
             updateBook({ chapters: next });
           }}
           onDelete={() => {

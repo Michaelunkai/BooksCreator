@@ -726,19 +726,45 @@ export function ChapterDetails({
   onDelete: () => void;
   onClose: () => void;
 }) {
+  const words = wordCount(chapter.content);
+  const statusLabel =
+    chapter.status === "final"
+      ? "Final draft"
+      : chapter.status === "revised"
+        ? "Revised draft"
+        : "First draft";
   return (
-    <Modal title="Chapter details" onClose={onClose}>
+    <Modal title="Chapter tools" onClose={onClose}>
       <div className="modal-body settings-form">
+        <div className="chapter-details-summary">
+          <div>
+            <span className="chapter-details-kicker">
+              Chapter {String(index + 1).padStart(2, "0")}
+            </span>
+            <strong>{chapter.title || "Untitled chapter"}</strong>
+          </div>
+          <span>
+            {words.toLocaleString()} words · {statusLabel}
+          </span>
+        </div>
+        <p className="chapter-details-intro">
+          Shape this chapter without leaving your manuscript. Rename it, leave
+          yourself a plan, set its progress, or change its place in the book.
+        </p>
         <label className="field">
-          Title
+          <span>Chapter title</span>
           <input
+            aria-label="Chapter title"
             value={chapter.title}
             onChange={(e) => onChange({ title: e.target.value })}
+            placeholder="Untitled chapter"
+            maxLength={200}
           />
         </label>
         <label className="field">
-          Draft status
+          <span>Draft status</span>
           <select
+            aria-label="Draft status"
             value={chapter.status}
             onChange={(e) =>
               onChange({ status: e.target.value as Chapter["status"] })
@@ -748,22 +774,37 @@ export function ChapterDetails({
             <option value="revised">Revised</option>
             <option value="final">Final draft</option>
           </select>
+          <small className="field-help">
+            Marking a chapter final is a writing milestone; it does not lock
+            your words.
+          </small>
         </label>
         <label className="field">
-          What happens in this chapter?
+          <span>Chapter plan</span>
           <textarea
+            aria-label="Chapter plan"
             rows={5}
             value={chapter.synopsis}
             onChange={(e) => onChange({ synopsis: e.target.value })}
             placeholder="A brief plan, turning points, or a question to answer."
+            maxLength={10000}
           />
+          <small className="field-help">
+            This private synopsis guides the writing companion and stays out of
+            the manuscript until you use it.
+          </small>
         </label>
         <div className="field">
           <span>Position in your book</span>
+          <small className="chapter-position-label">
+            Chapter {index + 1} of {count}
+          </small>
           <div className="inline-actions">
             <button
               className="button secondary"
+              type="button"
               disabled={index === 0}
+              title="Move this chapter earlier"
               onClick={() => onMove(-1)}
             >
               <ArrowUp size={16} />
@@ -771,7 +812,9 @@ export function ChapterDetails({
             </button>
             <button
               className="button secondary"
+              type="button"
               disabled={index === count - 1}
+              title="Move this chapter later"
               onClick={() => onMove(1)}
             >
               <ArrowDown size={16} />

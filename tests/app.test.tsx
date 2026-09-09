@@ -111,6 +111,47 @@ describe("integrated writing workspace", () => {
     ).not.toContain("The letter arrived");
   });
 
+  it("keeps chapter work approachable from the desk and exposes the repository link", async () => {
+    render(<App />);
+    await screen.findByRole("textbox", { name: "Chapter manuscript" });
+
+    const github = screen.getByRole("link", {
+      name: "Open Michaelunkai on GitHub",
+    });
+    expect(github.getAttribute("href")).toBe(
+      "https://github.com/Michaelunkai/BooksCreator",
+    );
+    expect(github.getAttribute("target")).toBe("_blank");
+
+    expect(screen.getByRole("button", { name: "Add chapter" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Chapter tools" })).toBeTruthy();
+    expect(
+      (
+        screen.getByRole("button", {
+          name: "Next chapter",
+        }) as HTMLButtonElement
+      ).disabled,
+    ).toBe(false);
+
+    fireEvent.click(screen.getByRole("button", { name: "Next chapter" }));
+    await waitFor(() =>
+      expect(
+        (screen.getByLabelText("Chapter title") as HTMLInputElement).value,
+      ).toBe("A familiar stranger"),
+    );
+    expect(
+      (
+        screen.getByRole("button", {
+          name: "Previous chapter",
+        }) as HTMLButtonElement
+      ).disabled,
+    ).toBe(false);
+
+    fireEvent.click(screen.getByRole("button", { name: "Chapter tools" }));
+    expect(screen.getByRole("dialog", { name: "Chapter tools" })).toBeTruthy();
+    expect(screen.getByLabelText("Chapter plan")).toBeTruthy();
+  });
+
   it("retains manuscripts when switching chapters and restores a named revision", async () => {
     render(<App />);
     await screen.findByRole("textbox", { name: "Chapter manuscript" });
