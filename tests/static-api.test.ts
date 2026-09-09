@@ -82,6 +82,27 @@ describe("static-host API fallback", () => {
     ).resolves.toEqual({ workspace, revision: 1 });
   });
 
+  it("uses the browser workspace when a remote static host returns HTML with status 200", async () => {
+    vi.stubGlobal("location", {
+      href: "https://michaelunkai.github.io/BooksCreator/",
+    });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() =>
+        Promise.resolve(
+          new Response("<!doctype html>", {
+            status: 200,
+            headers: { "Content-Type": "text/html" },
+          }),
+        ),
+      ),
+    );
+
+    await expect(
+      fetchJson<WorkspaceResponse>("/api/workspace"),
+    ).resolves.toEqual({ workspace: null, revision: 0 });
+  });
+
   it("persists settings without retaining an API key and reports offline mode", async () => {
     const fetchMock = vi
       .fn()

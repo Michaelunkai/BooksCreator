@@ -410,6 +410,13 @@ export async function fetchJson<T>(
   try {
     data = body ? JSON.parse(body) : null;
   } catch {
+    // Some static hosts serve their 404 document with a successful response
+    // after SPA rewrites. The document is not an app API response, so use the
+    // same browser-local contract as an actual static-host 404.
+    if (operation && isRemoteBrowserHost()) {
+      throwIfAborted(init.signal);
+      return runFallback(operation, init) as T;
+    }
     throw new ApiError(
       "The server returned an unreadable response. Your current work has been kept.",
       response.status,
