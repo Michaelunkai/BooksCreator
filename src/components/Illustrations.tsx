@@ -167,7 +167,10 @@ export function Illustrations({
           error && typeof error === "object" && "status" in error
             ? Number((error as { status?: unknown }).status)
             : 0;
-        if (controller.signal.aborted || (status && ![428].includes(status)))
+        if (
+          controller.signal.aborted ||
+          (status && ![200, 404, 428].includes(status))
+        )
           throw error;
         try {
           setStatus("Preparing the free on-device art model…");
@@ -194,6 +197,7 @@ export function Illustrations({
             caption: "",
             chapterId: chapter.id,
             createdAt: new Date().toISOString(),
+            kind: "scene",
           };
         } catch (browserError) {
           if (controller.signal.aborted) throw browserError;
@@ -221,6 +225,7 @@ export function Illustrations({
             caption: "",
             chapterId: chapter.id,
             createdAt: new Date().toISOString(),
+            kind: "scene",
           };
         }
       }
@@ -292,6 +297,7 @@ export function Illustrations({
         caption: file.name.replace(/\.[^.]+$/, ""),
         chapterId,
         createdAt: new Date().toISOString(),
+        kind: "scene",
       };
       latestOnChange.current([...currentBook.current.images, image]);
       setStatus("Your artwork has been added to the book.");

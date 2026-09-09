@@ -20,6 +20,8 @@ export interface StoryNote {
   name: string;
   details: string;
 }
+export type IllustrationKind =
+  "scene" | "cover" | "page" | "character" | "setting" | "opening" | "vignette";
 export interface Illustration {
   id: string;
   url: string;
@@ -28,6 +30,7 @@ export interface Illustration {
   caption: string;
   chapterId: string;
   createdAt: string;
+  kind?: IllustrationKind;
 }
 export interface Book {
   id: string;

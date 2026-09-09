@@ -7,6 +7,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import type { Editor } from "@tiptap/react";
 import App from "../src/App";
@@ -150,6 +151,34 @@ describe("integrated writing workspace", () => {
     fireEvent.click(screen.getByRole("button", { name: "Chapter tools" }));
     expect(screen.getByRole("dialog", { name: "Chapter tools" })).toBeTruthy();
     expect(screen.getByLabelText("Chapter plan")).toBeTruthy();
+  });
+
+  it("puts chapter tools beside every chapter and adds the book-level visual studio", async () => {
+    render(<App />);
+    await screen.findByRole("textbox", { name: "Chapter manuscript" });
+
+    expect(
+      screen.getByRole("button", { name: "Open tools for The letter" }),
+    ).toBeTruthy();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Open tools for The letter" }),
+    );
+    expect(screen.getByRole("dialog", { name: "Chapter tools" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Done" }));
+
+    fireEvent.click(screen.getByRole("button", { name: "Visual studio" }));
+    expect(
+      await screen.findByRole("heading", { name: "Visual studio" }),
+    ).toBeTruthy();
+    expect(screen.getByLabelText("Creative brief")).toBeTruthy();
+    const visualTypes = within(
+      screen.getByRole("group", { name: "Visual type" }),
+    );
+    expect(visualTypes.getByRole("button", { name: /Book cover/ })).toBeTruthy();
+    expect(visualTypes.getByRole("button", { name: /Page art/ })).toBeTruthy();
+    expect(visualTypes.getByRole("button", { name: /Character/ })).toBeTruthy();
+    expect(visualTypes.getByRole("button", { name: /Setting/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Create visual" })).toBeTruthy();
   });
 
   it("retains manuscripts when switching chapters and restores a named revision", async () => {

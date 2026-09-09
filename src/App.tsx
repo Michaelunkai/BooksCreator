@@ -18,6 +18,8 @@ import {
   X,
   PanelRightClose,
   Github,
+  MoreHorizontal,
+  Palette,
 } from "lucide-react";
 import type { Book, Chapter, Illustration } from "./types";
 import { useWorkspace } from "./lib/useWorkspace";
@@ -27,6 +29,7 @@ import { escapeHtml, textToHtml, wordCount } from "./lib/text";
 import { ManuscriptEditor } from "./components/ManuscriptEditor";
 import { Companion } from "./components/Companion";
 import { Illustrations } from "./components/Illustrations";
+import { VisualStudio } from "./components/VisualStudio";
 import { SettingsDialog } from "./components/SettingsDialog";
 import {
   BookSettings,
@@ -37,7 +40,7 @@ import {
   StoryBible,
 } from "./components/BookPanels";
 
-type View = "manuscript" | "bible" | "illustrations";
+type View = "manuscript" | "bible" | "visual" | "illustrations";
 type Dialog =
   "library" | "settings" | "book" | "history" | "chapter" | "export" | null;
 
@@ -354,6 +357,29 @@ export default function App() {
     setView("manuscript");
     setToast("Illustration added to the end of your chapter.");
   };
+  const updateImages = useCallback(
+    (images: Illustration[]) => {
+      const targetBookId = bookRef.current?.id;
+      if (!targetBookId) return;
+      setWorkspace((current) =>
+        current
+          ? {
+              ...current,
+              books: current.books.map((currentBook) =>
+                currentBook.id === targetBookId
+                  ? {
+                      ...currentBook,
+                      images,
+                      updatedAt: new Date().toISOString(),
+                    }
+                  : currentBook,
+              ),
+            }
+          : current,
+      );
+    },
+    [setWorkspace],
+  );
   if (loading)
     return (
       <div className="app-loading">
@@ -521,6 +547,7 @@ export default function App() {
               [
                 { id: "manuscript", name: "Manuscript", Icon: FileText },
                 { id: "bible", name: "Story bible", Icon: BookOpen },
+                { id: "visual", name: "Visual studio", Icon: Palette },
                 { id: "illustrations", name: "Illustrations", Icon: ImageIcon },
               ] as const
             ).map(({ id, name, Icon }) => (
@@ -560,36 +587,54 @@ export default function App() {
           </div>
           <nav className="chapter-list" aria-label="Chapters">
             {book.chapters.map((c, i) => (
-              <button
+              <div
                 key={c.id}
-                className={chapter.id === c.id ? "active" : ""}
-                aria-current={chapter.id === c.id ? "step" : undefined}
-                aria-label={`${String(i + 1).padStart(2, "0")} ${c.title || "Untitled chapter"}`}
-                title={`Open ${c.title || "Untitled chapter"}. ${chapterStatusLabel[c.status]} · ${wordCount(c.content).toLocaleString()} words.`}
-                onClick={() => {
-                  setChapterId(c.id);
-                  setView("manuscript");
-                  setNavOpen(false);
-                }}
+                className={`chapter-list-row ${chapter.id === c.id ? "active" : ""}`}
               >
-                <span>{String(i + 1).padStart(2, "0")}</span>
-                <span className="chapter-row-copy">
-                  <strong>{c.title || "Untitled chapter"}</strong>
-                  <small>
-                    <span
-                      className={`chapter-status-dot status-${c.status}`}
-                      aria-hidden="true"
-                    />
-                    {chapterStatusLabel[c.status]} ·{" "}
-                    {wordCount(c.content).toLocaleString()} words
-                  </small>
-                </span>
-                <ChevronRight
-                  className="chapter-row-arrow"
-                  size={14}
-                  aria-hidden="true"
-                />
-              </button>
+                <button
+                  className="chapter-row-main"
+                  aria-current={chapter.id === c.id ? "step" : undefined}
+                  aria-label={`${String(i + 1).padStart(2, "0")} ${c.title || "Untitled chapter"}`}
+                  title={`Open ${c.title || "Untitled chapter"}. ${chapterStatusLabel[c.status]} · ${wordCount(c.content).toLocaleString()} words.`}
+                  onClick={() => {
+                    setChapterId(c.id);
+                    setView("manuscript");
+                    setNavOpen(false);
+                  }}
+                >
+                  <span>{String(i + 1).padStart(2, "0")}</span>
+                  <span className="chapter-row-copy">
+                    <strong>{c.title || "Untitled chapter"}</strong>
+                    <small>
+                      <span
+                        className={`chapter-status-dot status-${c.status}`}
+                        aria-hidden="true"
+                      />
+                      {chapterStatusLabel[c.status]} ·{" "}
+                      {wordCount(c.content).toLocaleString()} words
+                    </small>
+                  </span>
+                  <ChevronRight
+                    className="chapter-row-arrow"
+                    size={14}
+                    aria-hidden="true"
+                  />
+                </button>
+                <button
+                  type="button"
+                  className="chapter-row-tools"
+                  aria-label={`Open tools for ${c.title || "Untitled chapter"}`}
+                  title={`Open tools for ${c.title || "Untitled chapter"}`}
+                  onClick={() => {
+                    setChapterId(c.id);
+                    setView("manuscript");
+                    setDialog("chapter");
+                    setNavOpen(false);
+                  }}
+                >
+                  <MoreHorizontal size={16} />
+                </button>
+              </div>
             ))}
           </nav>
           <p className="chapter-list-hint">
@@ -657,29 +702,18 @@ export default function App() {
               onChange={(bible) => updateBook({ bible })}
               onVoice={() => setDialog("book")}
             />
+          ) : view === "visual" ? (
+            <VisualStudio
+              book={book}
+              chapter={chapter}
+              onChange={updateImages}
+              onInsert={insertImage}
+            />
           ) : (
             <Illustrations
               book={book}
               chapter={chapter}
-              onChange={(images) => {
-                const targetBookId = book.id;
-                setWorkspace((w) =>
-                  w
-                    ? {
-                        ...w,
-                        books: w.books.map((b) =>
-                          b.id === targetBookId
-                            ? {
-                                ...b,
-                                images,
-                                updatedAt: new Date().toISOString(),
-                              }
-                            : b,
-                        ),
-                      }
-                    : w,
-                );
-              }}
+              onChange={updateImages}
               onInsert={insertImage}
             />
           )}

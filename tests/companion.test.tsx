@@ -10,6 +10,7 @@ import {
 } from "@testing-library/react";
 import { Companion } from "../src/components/Companion";
 import { Illustrations } from "../src/components/Illustrations";
+import { VisualStudio } from "../src/components/VisualStudio";
 import { SettingsDialog } from "../src/components/SettingsDialog";
 import { fetchJson } from "../src/lib/api";
 import { generateBrowser } from "../src/lib/browserWriter";
@@ -890,6 +891,43 @@ describe("illustration workspace", () => {
       finishUpload({ id: "late-image", url: "/media/late-image.png" });
     });
     expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
+describe("visual studio", () => {
+  it("offers book-level visual intents and saves a generated cover with its kind", async () => {
+    const onChange = vi.fn();
+    const result = {
+      id: "cover-one",
+      url: "/media/cover-one.png",
+      prompt: "A literary cover",
+      style: "Painterly literary",
+      caption: "",
+      chapterId: chapter.id,
+      createdAt: book.createdAt,
+    };
+    fetchMock.mockResolvedValueOnce(result);
+    render(
+      <VisualStudio
+        book={book}
+        chapter={chapter}
+        onChange={onChange}
+        onInsert={vi.fn()}
+      />,
+    );
+    expect(screen.getByRole("heading", { name: "Visual studio" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Create visual" }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledOnce());
+    const [images] = onChange.mock.calls[0];
+    expect(images[0]).toMatchObject({
+      id: "cover-one",
+      kind: "cover",
+      chapterId: chapter.id,
+    });
+    expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body))).toMatchObject({
+      chapterId: chapter.id,
+      size: "1024x1536",
+    });
   });
 });
 

@@ -382,6 +382,7 @@ export function createApp(options: AppOptions = {}) {
         caption: "",
         chapterId: input.chapterId,
         createdAt: new Date().toISOString(),
+        kind: "scene",
       };
       return image;
     });

@@ -106,6 +106,17 @@ export const illustrationSchema = z.object({
   caption: short,
   chapterId: id,
   createdAt: timestamp,
+  kind: z
+    .enum([
+      "scene",
+      "cover",
+      "page",
+      "character",
+      "setting",
+      "opening",
+      "vignette",
+    ])
+    .optional(),
 });
 export const bookSchema = z
   .object({
