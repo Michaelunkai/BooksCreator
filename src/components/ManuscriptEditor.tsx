@@ -349,7 +349,13 @@ export function ManuscriptEditor({
             <Settings2 size={15} />
             <span>Chapter tools</span>
           </button>
-          <button type="button" className="text-button" onClick={onFocus}>
+          <button
+            type="button"
+            className="text-button"
+            aria-label={focus ? "Leave focus" : "Focus mode"}
+            title={focus ? "Leave focus mode" : "Enter focus mode"}
+            onClick={onFocus}
+          >
             <span>{focus ? "Leave focus" : "Focus mode"}</span>
             {focus ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
           </button>
