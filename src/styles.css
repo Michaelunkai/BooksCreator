@@ -2296,8 +2296,15 @@ textarea::placeholder,
     justify-content: center;
     padding: 6px;
   }
+  .chapter-tools-button span,
+  .chapter-actions .text-button span {
+    display: none;
+  }
   .chapter-actions .text-button {
+    width: 31px;
     gap: 4px;
+    justify-content: center;
+    padding: 6px;
     padding-inline: 4px;
     font-size: 10px;
   }

@@ -350,7 +350,7 @@ export function ManuscriptEditor({
             <span>Chapter tools</span>
           </button>
           <button type="button" className="text-button" onClick={onFocus}>
-            {focus ? "Leave focus" : "Focus mode"}
+            <span>{focus ? "Leave focus" : "Focus mode"}</span>
             {focus ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
           </button>
         </div>
